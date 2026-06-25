@@ -1,5 +1,6 @@
 "use client";
 
+import { useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,10 +49,10 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
   const isEditMode = Boolean(project);
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
-    watch,
     reset,
     formState: { errors },
   } = useForm<ProjectFormValues>({
@@ -61,9 +62,19 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
       clientName: project?.clientName ?? "",
       address: project?.address ?? "",
       objectType: project?.objectType ?? "house",
-      phases: project ? String(project.phases) as "1" | "3" : "1",
+      phases: project ? (String(project.phases) as "1" | "3") : "1",
       comment: project?.comment ?? "",
     },
+  });
+
+  const objectTypeValue = useWatch({
+    control,
+    name: "objectType",
+  });
+
+  const phasesValue = useWatch({
+    control,
+    name: "phases",
   });
 
   function onSubmit(values: ProjectFormValues) {
@@ -100,7 +111,7 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
         <div className="space-y-2">
           <Label>Тип объекта</Label>
           <Select
-            value={watch("objectType")}
+            value={objectTypeValue}
             onValueChange={(value) =>
               setValue("objectType", value as ProjectFormValues["objectType"])
             }
@@ -122,7 +133,7 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
         <div className="space-y-2">
           <Label>Количество фаз</Label>
           <RadioGroup
-            value={watch("phases")}
+            value={phasesValue}
             onValueChange={(value) => setValue("phases", value as "1" | "3")}
             className="flex gap-6 pt-2"
           >
