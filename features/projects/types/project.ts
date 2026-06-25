@@ -6,11 +6,7 @@ export type ObjectType =
   | "production"
   | "other";
 
-export type ProjectStatus =
-  | "draft"
-  | "in_progress"
-  | "completed"
-  | "archived";
+export type ProjectStatus = "draft" | "in_progress" | "completed" | "archived";
 
 export interface Project {
   id: string;

@@ -1,4 +1,6 @@
+import Link from "next/link";
 import type { Project } from "@/features/projects/types";
+import { Button } from "@/components/ui/button";
 
 const objectTypeLabels: Record<Project["objectType"], string> = {
   house: "Частный дом",
@@ -12,7 +14,7 @@ const objectTypeLabels: Record<Project["objectType"], string> = {
 export function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="rounded-xl border bg-white p-5 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <p className="text-xs text-slate-500">{project.code}</p>
           <h3 className="text-lg font-semibold">{project.name}</h3>
@@ -26,8 +28,14 @@ export function ProjectCard({ project }: { project: Project }) {
       <div className="space-y-1 text-sm text-slate-600">
         <p>Тип объекта: {objectTypeLabels[project.objectType]}</p>
         <p>Фазы: {project.phases}</p>
-        {project.clientName && <p>Заказчик: {project.clientName}</p>}
-        {project.address && <p>Адрес: {project.address}</p>}
+        <p>Заказчик: {project.clientName || "—"}</p>
+        <p>Адрес: {project.address || "—"}</p>
+      </div>
+
+      <div className="mt-5 flex justify-end">
+        <Button asChild variant="outline" size="sm">
+          <Link href={`/projects/${project.id}`}>Открыть</Link>
+        </Button>
       </div>
     </div>
   );
