@@ -1,8 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useProjectStore } from "@/stores/projectStore";
+import { notFound } from "next/navigation";
+import { getProject } from "@/app/(dashboard)/projects/actions";
 import { Button } from "@/components/ui/button";
 
 const objectTypeLabels = {
@@ -14,27 +12,20 @@ const objectTypeLabels = {
   other: "Другое",
 };
 
-export default function ProjectDetailsPage() {
-  const params = useParams<{ id: string }>();
+interface ProjectDetailsPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
 
-  const project = useProjectStore((state) =>
-    state.projects.find((item) => item.id === params.id)
-  );
+export default async function ProjectDetailsPage({
+  params,
+}: ProjectDetailsPageProps) {
+  const { id } = await params;
+  const project = await getProject(id);
 
   if (!project) {
-    return (
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Проект не найден</h1>
-        <p className="mt-2 text-slate-500">
-          Сейчас проекты хранятся временно. После обновления страницы данные
-          очищаются.
-        </p>
-
-        <Button asChild className="mt-6">
-          <Link href="/projects">Вернуться к проектам</Link>
-        </Button>
-      </div>
-    );
+    notFound();
   }
 
   return (
