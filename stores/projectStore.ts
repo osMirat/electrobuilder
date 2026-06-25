@@ -12,9 +12,15 @@ interface CreateProjectInput {
   comment?: string;
 }
 
+interface UpdateProjectInput extends Partial<CreateProjectInput> {
+  status?: Project["status"];
+}
+
 interface ProjectStore {
   projects: Project[];
   createProject: (input: CreateProjectInput) => Project;
+  updateProject: (id: string, input: UpdateProjectInput) => void;
+  deleteProject: (id: string) => void;
   getProjectById: (id: string) => Project | undefined;
 }
 
@@ -47,6 +53,32 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     set({ projects: [project, ...projects] });
 
     return project;
+  },
+
+  updateProject: (id, input) => {
+    const now = new Date();
+
+    set((state) => ({
+      projects: state.projects.map((project) =>
+        project.id === id
+          ? {
+              ...project,
+              ...input,
+              name: input.name?.trim() ?? project.name,
+              clientName: input.clientName?.trim() ?? project.clientName,
+              address: input.address?.trim() ?? project.address,
+              comment: input.comment?.trim() ?? project.comment,
+              updatedAt: now,
+            }
+          : project
+      ),
+    }));
+  },
+
+  deleteProject: (id) => {
+    set((state) => ({
+      projects: state.projects.filter((project) => project.id !== id),
+    }));
   },
 
   getProjectById: (id) => {

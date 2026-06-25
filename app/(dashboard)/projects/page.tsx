@@ -34,11 +34,14 @@ export default function ProjectsPage() {
           </div>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+    {projects.map((project) => (
+        <ProjectCard
+            key={project.id}
+            project={project}
+        />
+    ))}
+</div>
       )}
     </div>
   );

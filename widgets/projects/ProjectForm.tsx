@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Project } from "@/features/projects/types";
 import { useProjectStore } from "@/stores/projectStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,11 +37,15 @@ const projectSchema = z.object({
 type ProjectFormValues = z.infer<typeof projectSchema>;
 
 interface ProjectFormProps {
+  project?: Project;
   onSuccess?: () => void;
 }
 
-export function ProjectForm({ onSuccess }: ProjectFormProps) {
+export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
   const createProject = useProjectStore((state) => state.createProject);
+  const updateProject = useProjectStore((state) => state.updateProject);
+
+  const isEditMode = Boolean(project);
 
   const {
     register,
@@ -52,26 +57,32 @@ export function ProjectForm({ onSuccess }: ProjectFormProps) {
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      name: "",
-      clientName: "",
-      address: "",
-      objectType: "house",
-      phases: "1",
-      comment: "",
+      name: project?.name ?? "",
+      clientName: project?.clientName ?? "",
+      address: project?.address ?? "",
+      objectType: project?.objectType ?? "house",
+      phases: project ? String(project.phases) as "1" | "3" : "1",
+      comment: project?.comment ?? "",
     },
   });
 
   function onSubmit(values: ProjectFormValues) {
-    createProject({
+    const payload = {
       name: values.name,
       clientName: values.clientName ?? "",
       address: values.address ?? "",
       objectType: values.objectType,
       phases: Number(values.phases) as 1 | 3,
       comment: values.comment ?? "",
-    });
+    };
 
-    reset();
+    if (project) {
+      updateProject(project.id, payload);
+    } else {
+      createProject(payload);
+      reset();
+    }
+
     onSuccess?.();
   }
 
@@ -151,7 +162,9 @@ export function ProjectForm({ onSuccess }: ProjectFormProps) {
           Отмена
         </Button>
 
-        <Button type="submit">Создать проект</Button>
+        <Button type="submit">
+          {isEditMode ? "Сохранить изменения" : "Создать проект"}
+        </Button>
       </div>
     </form>
   );

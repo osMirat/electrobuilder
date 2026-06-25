@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { Project } from "@/features/projects/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,21 +12,33 @@ import {
 } from "@/components/ui/dialog";
 import { ProjectForm } from "@/widgets/projects/ProjectForm";
 
-export function CreateProjectDialog() {
+interface CreateProjectDialogProps {
+  project?: Project;
+  trigger?: React.ReactNode;
+}
+
+export function CreateProjectDialog({
+  project,
+  trigger,
+}: CreateProjectDialogProps) {
   const [open, setOpen] = useState(false);
+
+  const isEditMode = Boolean(project);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>+ Новый проект</Button>
+        {trigger ?? <Button>+ Новый проект</Button>}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Новый проект</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? "Редактировать проект" : "Новый проект"}
+          </DialogTitle>
         </DialogHeader>
 
-        <ProjectForm onSuccess={() => setOpen(false)} />
+        <ProjectForm project={project} onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
