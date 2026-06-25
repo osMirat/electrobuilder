@@ -1,11 +1,9 @@
-"use client";
-
+import { getProjects } from "@/app/(dashboard)/projects/actions";
 import { CreateProjectDialog } from "@/widgets/projects/CreateProjectDialog";
 import { ProjectCard } from "@/widgets/projects/ProjectCard";
-import { useProjectStore } from "@/stores/projectStore";
 
-export default function ProjectsPage() {
-  const projects = useProjectStore((state) => state.projects);
+export default async function ProjectsPage() {
+  const projects = await getProjects();
 
   return (
     <div className="flex h-full flex-col">
@@ -35,13 +33,10 @@ export default function ProjectsPage() {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-    {projects.map((project) => (
-        <ProjectCard
-            key={project.id}
-            project={project}
-        />
-    ))}
-</div>
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
       )}
     </div>
   );

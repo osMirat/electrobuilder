@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.8.0",
   "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum ObjectType {\n  house\n  apartment\n  office\n  commercial\n  production\n  other\n}\n\nenum ProjectStatus {\n  draft\n  active\n  completed\n  archived\n}\n\nmodel Project {\n  id         String        @id @default(cuid())\n  code       String        @unique\n  name       String\n  clientName String?\n  address    String?\n  objectType ObjectType\n  phases     Int\n  comment    String?\n  status     ProjectStatus @default(draft)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum ObjectType {\n  house\n  apartment\n  office\n  commercial\n  production\n  other\n}\n\nenum ProjectStatus {\n  draft\n  in_progress\n  completed\n  archived\n}\n\nmodel Project {\n  id         String        @id @default(cuid())\n  code       String        @unique\n  name       String\n  clientName String?\n  address    String?\n  objectType ObjectType\n  phases     Int\n  comment    String?\n  status     ProjectStatus @default(draft)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},

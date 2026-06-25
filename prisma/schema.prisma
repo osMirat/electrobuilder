@@ -18,7 +18,7 @@ enum ObjectType {
 
 enum ProjectStatus {
   draft
-  active
+  in_progress
   completed
   archived
 }

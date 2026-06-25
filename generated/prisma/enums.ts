@@ -23,7 +23,7 @@ export type ObjectType = (typeof ObjectType)[keyof typeof ObjectType]
 
 export const ProjectStatus = {
   draft: 'draft',
-  active: 'active',
+  in_progress: 'in_progress',
   completed: 'completed',
   archived: 'archived'
 } as const

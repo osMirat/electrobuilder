@@ -1,7 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { Project } from "@/features/projects/types";
-import { useProjectStore } from "@/stores/projectStore";
-
+import { deleteProject } from "@/app/(dashboard)/projects/actions";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -18,14 +19,7 @@ import {
 
 import { CreateProjectDialog } from "@/widgets/projects/CreateProjectDialog";
 
-import {
-  User,
-  MapPin,
-  Home,
-  Zap,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { User, MapPin, Home, Zap, Pencil, Trash2 } from "lucide-react";
 
 const objectTypeLabels: Record<Project["objectType"], string> = {
   house: "Частный дом",
@@ -37,14 +31,11 @@ const objectTypeLabels: Record<Project["objectType"], string> = {
 };
 
 export function ProjectCard({ project }: { project: Project }) {
-  const deleteProject = useProjectStore((state) => state.deleteProject);
-
   return (
     <div className="h-full rounded-xl border bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
       <div className="mb-4 flex items-start justify-between">
         <div>
           <p className="text-xs text-slate-500">{project.code}</p>
-
           <h3 className="text-lg font-semibold">{project.name}</h3>
         </div>
 
@@ -100,23 +91,18 @@ export function ProjectCard({ project }: { project: Project }) {
 
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>
-                Удалить проект?
-              </AlertDialogTitle>
+              <AlertDialogTitle>Удалить проект?</AlertDialogTitle>
 
               <AlertDialogDescription>
-                Проект <b>{project.name}</b> будет удалён без возможности восстановления.
+                Проект <b>{project.name}</b> будет удалён без возможности
+                восстановления.
               </AlertDialogDescription>
             </AlertDialogHeader>
 
             <AlertDialogFooter>
-              <AlertDialogCancel>
-                Отмена
-              </AlertDialogCancel>
+              <AlertDialogCancel>Отмена</AlertDialogCancel>
 
-              <AlertDialogAction
-                onClick={() => deleteProject(project.id)}
-              >
+              <AlertDialogAction onClick={() => deleteProject(project.id)}>
                 Удалить
               </AlertDialogAction>
             </AlertDialogFooter>

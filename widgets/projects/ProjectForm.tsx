@@ -1,11 +1,15 @@
 "use client";
 
+import { useTransition } from "react";
 import { useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Project } from "@/features/projects/types";
-import { useProjectStore } from "@/stores/projectStore";
+import {
+  createProject,
+  updateProject,
+} from "@/app/(dashboard)/projects/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,8 +47,7 @@ interface ProjectFormProps {
 }
 
 export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
-  const createProject = useProjectStore((state) => state.createProject);
-  const updateProject = useProjectStore((state) => state.updateProject);
+  const [isPending, startTransition] = useTransition();
 
   const isEditMode = Boolean(project);
 
@@ -87,14 +90,16 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
       comment: values.comment ?? "",
     };
 
-    if (project) {
-      updateProject(project.id, payload);
-    } else {
-      createProject(payload);
-      reset();
-    }
+    startTransition(async () => {
+      if (project) {
+  await updateProject(project.id, payload);
+} else {
+  await createProject(payload);
+  reset();
+}
 
-    onSuccess?.();
+      onSuccess?.();
+    });
   }
 
   return (
@@ -173,8 +178,12 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
           Отмена
         </Button>
 
-        <Button type="submit">
-          {isEditMode ? "Сохранить изменения" : "Создать проект"}
+        <Button type="submit" disabled={isPending}>
+          {isPending
+            ? "Сохранение..."
+            : isEditMode
+              ? "Сохранить изменения"
+              : "Создать проект"}
         </Button>
       </div>
     </form>
